@@ -41,7 +41,7 @@ public class MainMenu {
 			case 3: mc.selectById(inputMemberId()); break;     // Controll 패키지에 있는 클래스에 처리
 			case 4: mc.selectByName(inputMemberName()); break;   // Controll 패키지에 있는 클래스에 처리
 			case 5: updateMember(); break;   // 현재 클래스에서 처리 
-//			case 6: mc.deleteMember(); break;   // Controll 패키지에 있는 클래스에 처리
+			case 6: mc.deleteMember(inputMemberId()); break;   // Controll 패키지에 있는 클래스에 처리
 			case 0: System.out.println("이용해 주셔서 감사합니다."); return;
 			default : System.out.println("메뉴를 잘못입력했습니다. 다시 입력해주세요.");
 			}

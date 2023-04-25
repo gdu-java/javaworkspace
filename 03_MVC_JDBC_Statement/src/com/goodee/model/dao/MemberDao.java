@@ -280,4 +280,37 @@ public class MemberDao {
 		return result;
 	}
 	
+	// Controller에서 요청한 회원정보 삭제 작업을 수행할 메서드
+	public int deleteMember(String userId) throws SQLException {
+		int result = 0;
+		
+		Connection conn = null;
+		Statement  stmt = null;
+		
+		String sql = "DELETE FROM MEMBER"
+				+ " WHERE USER_ID = '" + userId +"'";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			stmt = conn.createStatement();
+			result = stmt.executeUpdate(sql);
+			
+			if(result > 0) { //성공
+				conn.commit();
+			}else {
+				conn.rollback();
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+				stmt.close();
+				conn.close();
+		}
+		
+		return result;
+	}
 }
