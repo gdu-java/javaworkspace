@@ -233,4 +233,13 @@ public class MemberDao {
 		return list;
 	}
 	
+	// Controller에서 요청하는 회원정보 변경을 수행하는 메서드
+	public int updateMember(Member m) {
+		int result = 0;
+		
+		
+		
+		return result;
+	}
+	
 }

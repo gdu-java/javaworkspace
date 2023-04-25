@@ -70,4 +70,22 @@ public class MemberController {
 		}
 	}
 	
+	// 회원 정보 변경 요청을 처리할 메서드 
+	// @param : userId, userPwd, email, phone, addree
+	public void updateMember(String userId,String userPwd,String email,String phone,String address) {
+		Member m = new Member();
+		m.setUserId(userId);
+		m.setUserPwd(userPwd);
+		m.setEmail(email);
+		m.setPhone(phone);
+		m.setAddress(address);
+		
+		int result = new MemberDao().updateMember(m);
+		
+		if(result > 0 ) { //성공
+			new MainMenu().displaySuccess("성공적으로 변경되었습니다.");
+		}else { //실패
+			new MainMenu().displayFail("회원정보 변경에 실패했습니다.");
+		}
+	}
 }
