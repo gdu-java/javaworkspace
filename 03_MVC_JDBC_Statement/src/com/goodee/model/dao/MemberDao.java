@@ -281,7 +281,7 @@ public class MemberDao {
 	}
 	
 	// Controller에서 요청한 회원정보 삭제 작업을 수행할 메서드
-	public int deleteMember(String userId) throws SQLException {
+	public int deleteMember(String userId)  {
 		int result = 0;
 		
 		Connection conn = null;
@@ -307,8 +307,13 @@ public class MemberDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-				stmt.close();
-				conn.close();
+				try {
+					stmt.close();
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		
 		return result;
