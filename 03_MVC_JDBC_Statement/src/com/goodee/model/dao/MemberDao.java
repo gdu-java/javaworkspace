@@ -242,10 +242,10 @@ public class MemberDao {
 		
 		String sql = "UPDATE MEMBER "
 				+       "SET USER_PWD = '" + m.getUserPwd() +"',"
-				+       "SET EMAIL = '" + m.getEmail() +"',"
-				+       "SET PHONE = '" + m.getPhone() +"',"
-				+       "SET ADDRESS = '" + m.getAddress() +"',"
-				+     "WHERE USER_ID = '" + m.getUserId() +"',";
+				+       "    EMAIL = '" + m.getEmail() +"',"
+				+       "    PHONE = '" + m.getPhone() +"',"
+				+       "    ADDRESS = '" + m.getAddress() +"'"
+				+     "WHERE USER_ID = '" + m.getUserId() +"'";
 		
 		System.out.println(sql);
 				
