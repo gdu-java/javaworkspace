@@ -236,8 +236,46 @@ public class MemberDao {
 	// Controller에서 요청하는 회원정보 변경을 수행하는 메서드
 	public int updateMember(Member m) {
 		int result = 0;
+
+		Connection conn = null;
+		Statement  stmt = null;
 		
+		String sql = "UPDATE MEMBER "
+				+       "SET USER_PWD = '" + m.getUserPwd() +"',"
+				+       "SET EMAIL = '" + m.getEmail() +"',"
+				+       "SET PHONE = '" + m.getPhone() +"',"
+				+       "SET ADDRESS = '" + m.getAddress() +"',"
+				+     "WHERE USER_ID = '" + m.getUserId() +"',";
 		
+		System.out.println(sql);
+				
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			stmt = conn.createStatement();
+			result = stmt.executeUpdate(sql);
+			
+			if(result > 0) {  // 성공
+				conn.commit();
+			}else {           // 실패
+				conn.rollback();
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		return result;
 	}
