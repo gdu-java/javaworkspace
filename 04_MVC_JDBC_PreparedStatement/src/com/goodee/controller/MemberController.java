@@ -97,4 +97,14 @@ public class MemberController {
 			new MainMenu().displayFail("회원정보를 삭제하는데 실패했습니다.");
 		}
 	}
+	
+	public void loginMember(String userId, String userPwd) {
+		Member m = new MemberDao().loginMember(userId,userPwd);
+		
+		if(m == null) {
+			new MainMenu().displayFail("로그인 실패");
+		}else {
+			new MainMenu().displaySuccess(m.getUserName()+"님, 환영합니다.");
+		}
+	}
 }

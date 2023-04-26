@@ -383,4 +383,60 @@ public class MemberDao {
 		
 		return result;
 	}
+	
+	// 회원 아이디와 비밀번호를 이용해서 해당 회원이 존재하는지 데이터베이스를 조회하는 메서드
+	public Member loginMember(String userId,String userPwd) {
+		Member m = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = "SELECT * FROM MEMBER WHERE USER_ID = ? AND USER_PWD = ?";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPwd);
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				m = new Member();
+				
+				m.setUserNo(rset.getInt("user_no"));
+				m.setUserId(rset.getString("user_id"));
+				m.setUserPwd(rset.getString("user_pwd"));
+				m.setUserName(rset.getString("user_name"));
+				m.setGender(rset.getString("gender"));
+				m.setAge(rset.getInt("age"));
+				m.setEmail(rset.getString("email"));
+				m.setPhone(rset.getString("phone"));
+				m.setAddress(rset.getString("address"));
+				m.setHobby(rset.getString("hobby"));
+				m.setEnrollDate(rset.getDate("enroll_date"));
+			}
+			
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				rset.close();
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return m;
+	}
 }
