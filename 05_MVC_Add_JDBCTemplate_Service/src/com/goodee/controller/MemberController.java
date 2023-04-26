@@ -50,7 +50,7 @@ public class MemberController {
 	// 회원 아이디로 검색 요청을 처리하는 메서드
 	// @param : userId : 사용자가 입력해서 검색하고자 하는 회원 아이디값
 	public void selectById(String userId) {
-		Member m = new MemberDao().selectByUserId(userId);
+		Member m = new MemberService().selectByUserId(userId);
 		
 		if(m == null) {
 			new MainMenu().displayNoData(userId + "에 대한 조회결과가 없습니다.");

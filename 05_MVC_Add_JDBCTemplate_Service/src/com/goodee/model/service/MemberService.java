@@ -40,4 +40,12 @@ public class MemberService {
 		return list;
 	}
 	
+	public Member  selectByUserId(String userId) {
+		Connection conn = JDBCTemplate.getConnection();
+		
+		Member m = new MemberDao().selectByUserId(conn,userId);
+		JDBCTemplate.close(conn);
+		return m;
+	}
+	
 }

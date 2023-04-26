@@ -139,20 +139,15 @@ public class MemberDao {
 	}
 	
 	// 회원 아이디로 검색 요청시 조회하는 메서드
-	public Member selectByUserId(String userId) {
+	public Member selectByUserId(Connection conn,String userId) {
 		Member m = null;
 		
-		
-		Connection conn = null;
 		PreparedStatement  pstmt = null;
 		ResultSet  rset = null;
 		
 		String sql = "SELECT * FROM MEMBER WHERE USER_ID = ?";
 	
 		try {
-//			Class.forName("oracle.jdbc.driver.OracleDriver");
-//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
-			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, userId);
@@ -175,25 +170,12 @@ public class MemberDao {
 				m.setEnrollDate(rset.getDate("enroll_date"));
 				
 			}
-			
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-//			try {
 				close(rset);
 				close(pstmt);
-				close(conn);
-//			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
-		
-		
 		return m;
 	}	
 	
