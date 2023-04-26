@@ -8,7 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import static com.goodee.common.JDBCTemplate.getConnection;
+import static com.goodee.common.JDBCTemplate.close;
+import static com.goodee.common.JDBCTemplate.commit;
+import static com.goodee.common.JDBCTemplate.rollback;
+
+
 import com.goodee.model.vo.Member;
+
 
 public class MemberDao {
 
@@ -66,10 +73,11 @@ public class MemberDao {
 		String sql = "INSERT INTO MEMBER VALUES(SEQ_UNO.NEXTVAL,?,?,?,?,?,?,?,?,?,SYSDATE)";		
 		
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
 			
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 //			stmt = conn.createStatement();
+			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
 			
 			//pstmt.setString(물음표순서,대체할값)  => '대체할값' (양옆에 홑따옴표로 감싸준 데이터가 들어감)
@@ -89,13 +97,10 @@ public class MemberDao {
 			result = pstmt.executeUpdate();
 			
 			if(result > 0) {  // 성공
-				conn.commit();
+				commit(conn);
 			}else {           // 실패
-				conn.rollback();
+				rollback(conn);
 			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,8 +128,9 @@ public class MemberDao {
 		String sql = "SELECT * FROM MEMBER";
 	
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
+//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
 			rset = pstmt.executeQuery();
 			
@@ -147,9 +153,9 @@ public class MemberDao {
 				list.add(m);
 			}
 			
-		} catch (ClassNotFoundException e) {
+//		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -180,8 +186,9 @@ public class MemberDao {
 		String sql = "SELECT * FROM MEMBER WHERE USER_ID = ?";
 	
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
+//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, userId);
@@ -205,21 +212,21 @@ public class MemberDao {
 				
 			}
 			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
+//			try {
+				close(rset);
+				close(pstmt);
+				close(conn);
+//			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//				e.printStackTrace();
+//			}
 		}
 		
 		
