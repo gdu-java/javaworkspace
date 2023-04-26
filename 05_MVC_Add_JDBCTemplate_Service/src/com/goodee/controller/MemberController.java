@@ -16,7 +16,7 @@ public class MemberController {
  */
 
 	/*
-	 * 회원 추가 요청을 처리하는 메서드
+	 * 1. 회원 추가 요청을 처리하는 메서드
 	 */
 	public void insertMember(String userId,String userPwd,String userName,
 			                 String gender,String age,String email,
@@ -34,7 +34,7 @@ public class MemberController {
 		}
 	}
 	/*
-	 * 회원전체를 조회요청을 처리하는 메서드
+	 * 2. 회원전체를 조회요청을 처리하는 메서드
 	 */
 	public void selectList() {
 		ArrayList<Member> list = new MemberService().selectList();
@@ -47,7 +47,7 @@ public class MemberController {
 		
 	}
 	
-	// 회원 아이디로 검색 요청을 처리하는 메서드
+	// 3. 회원 아이디로 검색 요청을 처리하는 메서드
 	// @param : userId : 사용자가 입력해서 검색하고자 하는 회원 아이디값
 	public void selectById(String userId) {
 		Member m = new MemberService().selectByUserId(userId);
@@ -59,20 +59,20 @@ public class MemberController {
 		}
 	}
 	
-	public void selectByName(String userName) {
-//		Member m = new MemberDao().selectByUserName(userName);
-		ArrayList<Member> list = new MemberDao().selectByUserName(userName);
+	// 키워드로 회원 아이디 또는 회원이름을 검색하고자 하는 요청을 처리하는 메서드
+	public void selectByName(String keyword) {
+		ArrayList<Member> list = new MemberService().selectByUserKeyword(keyword);
 		
 		
 		if(list.isEmpty()) {
-			new MainMenu().displayNoData(userName+"라는 키워드에 해당하는 회원이 없습니다.");
+			new MainMenu().displayNoData(keyword+"라는 키워드에 해당하는 회원이 없습니다.");
 		}else {
 			new MainMenu().displayMemberList(list);
 		}
 	}
 	
 	// 회원 정보 변경 요청을 처리할 메서드 
-	// @param : userId, userPwd, email, phone, addree
+	// @param : userId, userPwd, email, phone, address
 	public void updateMember(String userId,String userPwd,String email,String phone,String address) {
 		Member m = new Member();
 		m.setUserId(userId);
@@ -81,7 +81,7 @@ public class MemberController {
 		m.setPhone(phone);
 		m.setAddress(address);
 		
-		int result = new MemberDao().updateMember(m);
+		int result = new MemberService().updateMember(m);
 		
 		if(result > 0 ) { //성공
 			new MainMenu().displaySuccess("성공적으로 변경되었습니다.");
@@ -89,8 +89,10 @@ public class MemberController {
 			new MainMenu().displayFail("회원정보 변경에 실패했습니다.");
 		}
 	}
+	
+	//회원 탈퇴 요청을 처리하는 메서드
 	public void deleteMember(String userId) {
-		int result = new MemberDao().deleteMember(userId);
+		int result = new MemberService().deleteMember(userId);
 		
 		if(result > 0) { //성공
 			new MainMenu().displaySuccess("회원정보를 성공적으로 삭제했습니다.");
@@ -100,7 +102,7 @@ public class MemberController {
 	}
 	
 	public void loginMember(String userId, String userPwd) {
-		Member m = new MemberDao().loginMember(userId,userPwd);
+		Member m = new MemberService().loginMember(userId,userPwd);
 		
 		if(m == null) {
 			new MainMenu().displayFail("로그인 실패");

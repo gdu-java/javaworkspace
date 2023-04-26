@@ -13,7 +13,7 @@ import static com.goodee.common.JDBCTemplate.close;
 import static com.goodee.common.JDBCTemplate.commit;
 import static com.goodee.common.JDBCTemplate.rollback;
 
-
+import com.goodee.common.JDBCTemplate;
 import com.goodee.model.vo.Member;
 
 
@@ -179,10 +179,10 @@ public class MemberDao {
 		return m;
 	}	
 	
-	public ArrayList<Member> selectByUserName(String keyword) {
+	//MemberService에서 요청하는 키워드 검색서비스를 수행하는 메서드
+	public ArrayList<Member> selectByUserKeyword(Connection conn,String keyword) {
 		ArrayList<Member> list = new ArrayList<>();
 		
-		Connection conn = null;
 		PreparedStatement  pstmt = null;
 		ResultSet  rset = null;
 		/*
@@ -194,8 +194,6 @@ public class MemberDao {
 		String sql = "SELECT * FROM MEMBER WHERE USER_NAME LIKE  ? OR USER_ID LIKE ?";
 	
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 			pstmt = conn.prepareStatement(sql);
 			//방법 1일 경우
 			//pstmt.setString(1,userName);
@@ -223,10 +221,6 @@ public class MemberDao {
 				
 				list.add(m);
 			}
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -234,7 +228,6 @@ public class MemberDao {
 			try {
 				rset.close();
 				pstmt.close();
-				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -245,11 +238,10 @@ public class MemberDao {
 		return list;
 	}
 	
-	// Controller에서 요청하는 회원정보 변경을 수행하는 메서드
-	public int updateMember(Member m) {
+	// Service에서 요청하는 회원정보 변경을 수행하는 메서드
+	public int updateMember(Connection conn,Member m) {
 		int result = 0;
 
-		Connection conn = null;
 		PreparedStatement  pstmt = null;
 		
 		String sql = "UPDATE MEMBER SET USER_PWD = ?,"
@@ -258,12 +250,7 @@ public class MemberDao {
 				+       "    ADDRESS = ?"
 				+     "WHERE USER_ID = ?";
 		
-//		System.out.println(sql);
-				
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, m.getUserPwd());
@@ -274,83 +261,50 @@ public class MemberDao {
 			
 			result = pstmt.executeUpdate();
 			
-			if(result > 0) {  // 성공
-				conn.commit();
-			}else {           // 실패
-				conn.rollback();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			JDBCTemplate.close(pstmt);
 		}
 		
 		return result;
 	}
 	
-	// Controller에서 요청한 회원정보 삭제 작업을 수행할 메서드
-	public int deleteMember(String userId)  {
+	// MemberService에서 요청한 회원정보 삭제 작업을 수행할 메서드
+	public int deleteMember(Connection conn,String userId)  {
 		int result = 0;
 		
-		Connection conn = null;
 		PreparedStatement  pstmt = null;
 		
 		String sql = "DELETE FROM MEMBER WHERE USER_ID = ?";
 		
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, userId);
 			result = pstmt.executeUpdate();
 			
-			if(result > 0) { //성공
-				conn.commit();
-			}else {
-				conn.rollback();
-			}
-			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-				try {
-					pstmt.close();
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			JDBCTemplate.close(pstmt);;
 		}
 		
 		return result;
 	}
 	
 	// 회원 아이디와 비밀번호를 이용해서 해당 회원이 존재하는지 데이터베이스를 조회하는 메서드
-	public Member loginMember(String userId,String userPwd) {
+	public Member loginMember(Connection conn,String userId,String userPwd) {
 		Member m = null;
 		
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		
 		String sql = "SELECT * FROM MEMBER WHERE USER_ID = ? AND USER_PWD = ?";
 		
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, userId);
@@ -373,23 +327,12 @@ public class MemberDao {
 				m.setHobby(rset.getString("hobby"));
 				m.setEnrollDate(rset.getDate("enroll_date"));
 			}
-			
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
 		}
 		return m;
 	}

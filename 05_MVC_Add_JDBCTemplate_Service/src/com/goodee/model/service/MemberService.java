@@ -40,6 +40,7 @@ public class MemberService {
 		return list;
 	}
 	
+	// 회원 아이디 검색 서비스 메서드
 	public Member  selectByUserId(String userId) {
 		Connection conn = JDBCTemplate.getConnection();
 		
@@ -48,4 +49,58 @@ public class MemberService {
 		return m;
 	}
 	
+	// 키워드로 회원아이디 또는 회원 이름 검색 서비스 메서드
+	public ArrayList<Member> selectByUserKeyword(String keyword){
+		Connection conn = JDBCTemplate.getConnection();
+	
+		ArrayList<Member> list = new MemberDao().selectByUserKeyword(conn,keyword);
+		JDBCTemplate.close(conn);
+		
+		return list;
+	}
+	
+	// 회원정보 업데이트 서비스 메서드
+	public int updateMember(Member m) {
+		Connection conn = JDBCTemplate.getConnection();
+
+		int result = new MemberDao().updateMember(conn,m);
+		
+		// 트랜잭션 처리
+		if(result > 0) { //성공
+			JDBCTemplate.commit(conn);
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		return result;
+	}
+	
+	// 회원 탈퇴 서비스 메서드
+	public int deleteMember(String userId) {
+		Connection conn = JDBCTemplate.getConnection();
+
+		int result = new MemberDao().deleteMember(conn,userId);
+		
+		// 트랜잭션 처리
+		if(result > 0) { //성공
+			JDBCTemplate.commit(conn);
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		return result;		
+	}
+	
+	// 회원 로그인 서비스 메서드
+	public Member loginMember(String userId,String userPwd) {
+		Connection conn = JDBCTemplate.getConnection();
+		
+		Member m = new MemberDao().loginMember(conn,userId,userPwd);
+		JDBCTemplate.close(conn);
+		return m;
+	}
 }
