@@ -174,16 +174,18 @@ public class MemberDao {
 		
 		
 		Connection conn = null;
-		Statement  stmt = null;
+		PreparedStatement  pstmt = null;
 		ResultSet  rset = null;
 		
-		String sql = "SELECT * FROM MEMBER WHERE USER_ID = '" + userId + "'";
+		String sql = "SELECT * FROM MEMBER WHERE USER_ID = ?";
 	
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery(sql);
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			rset = pstmt.executeQuery();
 			
 			if(rset.next()) {
 				m = new Member();
@@ -212,7 +214,7 @@ public class MemberDao {
 		} finally {
 			try {
 				rset.close();
-				stmt.close();
+				pstmt.close();
 				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -224,20 +226,31 @@ public class MemberDao {
 		return m;
 	}	
 	
-	public ArrayList<Member> selectByUserName(String userName) {
+	public ArrayList<Member> selectByUserName(String keyword) {
 		ArrayList<Member> list = new ArrayList<>();
 		
 		Connection conn = null;
-		Statement  stmt = null;
+		PreparedStatement  pstmt = null;
 		ResultSet  rset = null;
+		/*
+		 * WHERE절에 %를 포함해야 하는 경우 2가지 방법
+		 * 1) String sql ="SELECT * FROM MEMBER WHERE USER_NAME LIKE '%' || ? || '%'"
+		 * 2) String sql ="SELECT * FROM MEMBER WHERE USER_NAME LIKE  ? OR USER_ID LIKE ?" 
+		 */
 		
-		String sql = "SELECT * FROM MEMBER WHERE USER_NAME like '%" + userName + "%'";
+		String sql = "SELECT * FROM MEMBER WHERE USER_NAME LIKE  ? OR USER_ID LIKE ?";
 	
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery(sql);
+			pstmt = conn.prepareStatement(sql);
+			//방법 1일 경우
+			//pstmt.setString(1,userName);
+			
+			//방법 2일 경우
+			pstmt.setString(1, "%"+keyword+"%");
+			pstmt.setString(2, "%"+keyword+"%");
+			rset = pstmt.executeQuery();
 			
 			while(rset.next()) {
 				Member m = new Member();
@@ -267,7 +280,7 @@ public class MemberDao {
 		} finally {
 			try {
 				rset.close();
-				stmt.close();
+				pstmt.close();
 				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -284,23 +297,28 @@ public class MemberDao {
 		int result = 0;
 
 		Connection conn = null;
-		Statement  stmt = null;
+		PreparedStatement  pstmt = null;
 		
-		String sql = "UPDATE MEMBER "
-				+       "SET USER_PWD = '" + m.getUserPwd() +"',"
-				+       "    EMAIL = '" + m.getEmail() +"',"
-				+       "    PHONE = '" + m.getPhone() +"',"
-				+       "    ADDRESS = '" + m.getAddress() +"'"
-				+     "WHERE USER_ID = '" + m.getUserId() +"'";
+		String sql = "UPDATE MEMBER SET USER_PWD = ?,"
+				+       "    EMAIL = ?,"
+				+       "    PHONE = ?,"
+				+       "    ADDRESS = ?"
+				+     "WHERE USER_ID = ?";
 		
-		System.out.println(sql);
+//		System.out.println(sql);
 				
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
-			stmt = conn.createStatement();
-			result = stmt.executeUpdate(sql);
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, m.getUserPwd());
+			pstmt.setString(2, m.getEmail());
+			pstmt.setString(3, m.getPhone());
+			pstmt.setString(4, m.getAddress());
+			
+			result = pstmt.executeUpdate();
 			
 			if(result > 0) {  // 성공
 				conn.commit();
@@ -315,7 +333,7 @@ public class MemberDao {
 			e.printStackTrace();
 		} finally {
 			try {
-				stmt.close();
+				pstmt.close();
 				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
