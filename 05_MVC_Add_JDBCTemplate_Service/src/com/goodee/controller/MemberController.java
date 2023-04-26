@@ -3,6 +3,7 @@ package com.goodee.controller;
 import java.util.ArrayList;
 
 import com.goodee.model.dao.MemberDao;
+import com.goodee.model.service.MemberService;
 import com.goodee.model.vo.Member;
 import com.goodee.view.MainMenu;
 
@@ -24,7 +25,7 @@ public class MemberController {
 		Member m = new Member(userId,userPwd,userName,gender,Integer.parseInt(age)
 				                ,email,phone,address,hobby);
 		
-		int result = new MemberDao().insertMember(m);
+		int result = new MemberService().insertMember(m);
 		
 		if(result > 0) { //성공
 			new MainMenu().displaySuccess("성공적으로 회원 추가되었습니다.");
@@ -36,7 +37,7 @@ public class MemberController {
 	 * 회원전체를 조회요청을 처리하는 메서드
 	 */
 	public void selectList() {
-		ArrayList<Member> list = new MemberDao().selectList();
+		ArrayList<Member> list = new MemberService().selectList();
 		
 		if(list.isEmpty()) { // 리스트가 비어있을 경우 => 조회된 결과 없음.
 			new MainMenu().displayNoData("조회 결과 데이터가 없습니다.");

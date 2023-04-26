@@ -53,33 +53,16 @@ public class MemberDao {
  *   
  */
 	
-	public int insertMember(Member m) {
+	public int insertMember(Connection conn,Member m) {
 		
 		int result = 0;
-		
-		Connection        conn = null;
 		PreparedStatement pstmt = null;
-//		Statement  stmt = null;
 		
-//		String sql = "INSERT INTO MEMBER VALUES(SEQ_UNO.NEXTVAL, '"+ m.getUserId()  + "', "
-//															  + "'"+ m.getUserPwd() + "', "
-//															  + "'"+ m.getUserName() + "', "
-//															  + "'"+ m.getGender() + "', "
-//															  	   + m.getAge() + ", "
-//															  + "'"+ m.getEmail() + "', "
-//															  + "'"+ m.getPhone() + "', "
-//															  + "'"+ m.getAddress() + "', "
-//															  + "'"+ m.getHobby() + "', SYSDATE)";
 		String sql = "INSERT INTO MEMBER VALUES(SEQ_UNO.NEXTVAL,?,?,?,?,?,?,?,?,?,SYSDATE)";		
 		
 		try {
-//			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
-//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
-//			stmt = conn.createStatement();
-			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
-			
+
 			//pstmt.setString(물음표순서,대체할값)  => '대체할값' (양옆에 홑따옴표로 감싸준 데이터가 들어감)
 			//pstmt.setInt(물음표순서,대체할값)     => 홑따옴표없이 데이터가 들어감
 			pstmt.setString(1, m.getUserId());
@@ -92,44 +75,31 @@ public class MemberDao {
 			pstmt.setString(8, m.getAddress());
 			pstmt.setString(9, m.getHobby());
 			
-			
-			
-			result = pstmt.executeUpdate();
-			
-			if(result > 0) {  // 성공
-				commit(conn);
-			}else {           // 실패
-				rollback(conn);
-			}
-		} catch (SQLException e) {
+			result = pstmt.executeUpdate();			
+		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		} finally {
 			try {
 				pstmt.close();
-				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}				
 		}
-		
 		return result;
 	}
 	
 	// 전체 회원을 조회하는 메서드
-	public ArrayList<Member> selectList() {
+	public ArrayList<Member> selectList(Connection conn) {
 		ArrayList<Member> list = new ArrayList<>();
 		
-		Connection conn = null;
 		PreparedStatement  pstmt = null;
 		ResultSet  rset = null;
 		
 		String sql = "SELECT * FROM MEMBER";
 	
 		try {
-//			Class.forName("oracle.jdbc.driver.OracleDriver");
-//			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
 			conn = getConnection();
 			pstmt = conn.prepareStatement(sql);
 			rset = pstmt.executeQuery();
@@ -152,10 +122,6 @@ public class MemberDao {
 				
 				list.add(m);
 			}
-			
-//		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -163,13 +129,11 @@ public class MemberDao {
 			try {
 				rset.close();
 				pstmt.close();
-				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
 		
 		return list;
 	}
