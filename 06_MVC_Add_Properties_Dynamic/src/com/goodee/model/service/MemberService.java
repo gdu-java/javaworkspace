@@ -103,4 +103,16 @@ public class MemberService {
 		JDBCTemplate.close(conn);
 		return m;
 	}
+	
+	// 회원 인적사항 출력 서비스 메서드
+	public Member selectProfile(String userId,String userPwd) {
+		
+		Connection conn = JDBCTemplate.getConnection();
+
+		Member m = new MemberDao().selectProfile(conn,userId,userPwd);
+
+		JDBCTemplate.close(conn);
+		
+		return m;
+	}
 }

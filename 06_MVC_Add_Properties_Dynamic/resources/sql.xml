@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="selectList">
+		SELECT
+				USER_NO
+			,	USER_ID
+			,	USER_PWD
+			,	USER_NAME
+			,	GENDER
+			,	AGE
+			,	EMAIL
+			,	PHONE
+			,	ADDRESS
+			,	HOBBY
+			,	ENROLL_DATE
+		  FROM MEMBER
+	</entry>
+	
+	<entry key="insertMember">
+		INSERT 
+		  INTO MEMBER (
+				USER_NO
+			,	USER_ID
+			,	USER_PWD
+			,	USER_NAME
+			,	GENDER
+			,	AGE
+			,	EMAIL
+			,	PHONE
+			,	ADDRESS
+			,	HOBBY
+			,	ENROLL_DATE		  
+		    )
+	    VALUES (
+	           SEQ_UNO.NEXTVAL
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,?
+	           ,SYSDATE )
+	
+	</entry>
+
+	<entry key="selectProfile">
+		SELECT 
+				USER_NAME
+			  , EMAIL
+			  , PHONE
+			  , ADDRESS
+			  , HOBBY
+		  FROM  MEMBER
+		 WHERE  USER_ID  = ?
+		   AND  USER_PWD = ?
+	</entry>
+	
+
+
+
+</properties>

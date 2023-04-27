@@ -40,7 +40,7 @@ public class JDBCTemplate {
 			conn = DriverManager.getConnection(prop.getProperty("url"),
 					                           prop.getProperty("username"),
 					                           prop.getProperty("password"));
-			System.out.println(prop.getProperty("test"));
+			System.out.println(prop.getProperty("url"));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
