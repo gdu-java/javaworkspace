@@ -132,7 +132,6 @@ public class MainMenu {
 	public void selectProfile() {
 		System.out.println("\n=====인적사항=====");
 		
-		System.out.println("회원 아이디 입력 :");
 		String userId = inputMemberId();
 		
 		System.out.println("회원 비밀번호 입력 :");
@@ -182,8 +181,9 @@ public class MainMenu {
 		if(m.getHobby() != null) {
 			String[] hobby = m.getHobby().split(",");
 			
+			System.out.print("취  미 : ");
 			for(String s : hobby) {
-				System.out.println(s + " ");
+				System.out.print(s + " ");
 			}
 		}else {
 			System.out.println("취  미 : 없음");
